@@ -11,13 +11,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 
-public class FileController {
+public class FileController{
 
     private final FileService fileService;
 
@@ -27,13 +34,10 @@ public class FileController {
 
     @PostMapping("/upload-file")
     public String uploadFile(Authentication authentication, @RequestParam("fileUpload")MultipartFile fileUpload, Model model) {
-        SuperDuperFile sdFile = new SuperDuperFile();
         User user = (User) authentication.getPrincipal();
         String fileUploadedError = null;
 
-        if (!fileService.isFileNameAvailable(fileUpload.getOriginalFilename(), user.getUserId())) {
-            fileUploadedError = "File name is already used";
-        }
+        fileUploadedError = fileService.validateFile(user.getUserId(), fileUpload.getOriginalFilename(), fileUpload.getSize());
 
         if(fileUploadedError == null){
             try {
@@ -93,6 +97,4 @@ public class FileController {
         model.addAttribute("files", fileService.getFilesByUser(user.getUserId()));
         return "home";
     }
-
-
 }

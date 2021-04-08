@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,7 +30,7 @@ class CloudStorageApplicationTests {
 
 	private String baseURL;
 
-	private final String username="ggranados";
+	private String username;
 	private final String password="ggranados";
 	private final String firstName = "German";
 	private final String lastName = "Granados";
@@ -66,6 +67,8 @@ class CloudStorageApplicationTests {
 	}
 
 	public void signupUserAndLogin(){
+		Random random = new Random();
+		username = "ggranados" + String.valueOf(random.nextInt(1000));
 		driver.get(signupURL);
 		SignupPage signupPage = new SignupPage(driver);
 		signupPage.signup(firstName, lastName, username, password);
@@ -233,7 +236,8 @@ class CloudStorageApplicationTests {
 		signupUserAndLogin();
 		FilePage filePage = new FilePage(driver);
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getChooseFilebutton()));
-		filePage.getChooseFilebutton().sendKeys("C:\\Users\\gg7pe\\Desktop\\sandro.jpg");
+		//filePage.getChooseFilebutton().sendKeys("C:\\Users\\gg7pe\\Desktop\\sandro.jpg");
+		filePage.getChooseFilebutton().sendKeys(getClass().getClassLoader().getResource("static/img/sandro.jpg").getPath().substring(1));
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getSubmitFileButton()));
 		js.executeScript("arguments[0].click();", filePage.getSubmitFileButton());
 		this.driverWait.until(ExpectedConditions.visibilityOf(filePage.getFileCreatedSuccessMsg()));
@@ -245,7 +249,7 @@ class CloudStorageApplicationTests {
 		signupUserAndLogin();
 		FilePage filePage = new FilePage(driver);
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getChooseFilebutton()));
-		filePage.getChooseFilebutton().sendKeys("C:\\Users\\gg7pe\\Desktop\\sandro1.jpg");
+		filePage.getChooseFilebutton().sendKeys(getClass().getClassLoader().getResource("static/img/sandro.jpg").getPath().substring(1));
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getSubmitFileButton()));
 		js.executeScript("arguments[0].click();", filePage.getSubmitFileButton());
 		this.driverWait.until(ExpectedConditions.visibilityOf(filePage.getFileCreatedSuccessMsg()));
@@ -261,13 +265,13 @@ class CloudStorageApplicationTests {
 		signupUserAndLogin();
 		FilePage filePage = new FilePage(driver);
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getChooseFilebutton()));
-		filePage.getChooseFilebutton().sendKeys("C:\\Users\\gg7pe\\Desktop\\sandro.jpg");
+		filePage.getChooseFilebutton().sendKeys(getClass().getClassLoader().getResource("static/img/sandro.jpg").getPath().substring(1));
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getSubmitFileButton()));
 		js.executeScript("arguments[0].click();", filePage.getSubmitFileButton());
 		this.driverWait.until(ExpectedConditions.visibilityOf(filePage.getFileCreatedSuccessMsg()));
 		assertEquals("File Uploaded successfully", filePage.getFileCreatedSuccessMsg().getText());
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getChooseFilebutton()));
-		filePage.getChooseFilebutton().sendKeys("C:\\Users\\gg7pe\\Desktop\\sandro.jpg");
+		filePage.getChooseFilebutton().sendKeys(getClass().getClassLoader().getResource("static/img/sandro.jpg").getPath().substring(1));
 		this.driverWait.until(ExpectedConditions.elementToBeClickable(filePage.getSubmitFileButton()));
 		js.executeScript("arguments[0].click();", filePage.getSubmitFileButton());
 		this.driverWait.until(ExpectedConditions.visibilityOf(filePage.getFileErrorMsg()));

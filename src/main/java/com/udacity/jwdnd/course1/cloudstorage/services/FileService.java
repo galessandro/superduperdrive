@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.SuperDuperFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -49,4 +50,28 @@ public class FileService {
         return true;
     }
 
+    public boolean isFileNameBlank(String fileName){
+        return fileName == null || fileName.trim().equals("");
+    }
+
+    public boolean isFileSizeTooLarge(Long size){
+        return size > 5242880L;
+    }
+
+    public String validateFile(Integer userId, String fileName, Long size){
+        if(isFileNameBlank(fileName)){
+            return "File name is invalid";
+        }
+
+        if(!isFileNameAvailable(fileName, userId)){
+            return "File name is already used";
+        }
+
+        if(isFileSizeTooLarge(size)){
+            //return "File size is too large";
+            throw new MaxUploadSizeExceededException(size);
+        }
+
+        return null;
+    }
 }
